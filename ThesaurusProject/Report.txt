@@ -1,0 +1,61 @@
+I used a hash table with chaining to store words that will be recognized by the program. It is essentially a way for the program to access the
+  memory corresponding to that word.
+  In the hash table there exits (besides some data) a linked list for chaining, and a pointer to a Heap.
+I used a heap to store synonyms with a closeness score. (Natural score is a holdover from a failed idea)
+
+It is in this way the program reads from a library file, passes each line into a hash table.
+These words then have a data member of a max heap that stores synonyms.
+The heap exists so that when prompted, it can return the top 3 synonyms with the highest closeness values.
+
+I had several challenges, such as deciding what data structures to use.
+  I originally wanted to use a graph so that each added synonym would act as a word in itself, and just add it as a node with edges to synonyms.
+  This would make a "web" of words so that every word in the graph is connected to the other ones.
+  I decided not to when I realized it would be less awkward to have direct control over words added, that way there is an avoidance of
+  one word returning a completely unrelated synonym. I would have tried to mitigate this using weighting in the graph, but since I wanted
+  user input to redefine the connections between each synonym, this might have fallen apart.
+  Still, it should be possible to add every word and its synonyms into the hash table as words themselves defined with synonyms.
+
+I had the biggest problem trying to find an error that was preventing my heaps from reorganizing themselves, it turns out it was a poorly
+  created swap function as well as pointing to element 0 in the heap rather than element 1 as the head was the problem.
+  I found this by myself, and it would have been hard for anyone else to find without a good understanding of my code.
+
+Because the synonyms are stored in a heap and sorted by a user defined value (that is originally set to 0 and incremented by user, closeness),
+  the heap will reorganize itself after input is given. This can be seen by going into (L)ibrary, (S)ynonyms, and the heap for a word will be shown.
+  It is also possible to change the user value in this menu. To see how it changes, exit this by declining the offer to change the value, and
+  enter the same menu for the same word. When it prints out the synonyms again, it will be reorganized. It is a max heap.
+
+  Repeated synonyms on another line will only add new synonyms, though it will increase the closeness value by 1 every repeated synonym.
+
+Features to add:
+  Now that I am done, it dawns on me that, though I have indeed added a bunch of synonyms to the data structures, it is impossible to access
+  any but the top3 synonyms. I think this could be fixed by having 2 random other synonyms showing up for user input when the get advice function
+  is run. This would still do the function's original job while allowing for more data to be actually used. Done, sort of.
+  This has been implemented in the form of a new option (l) that allows for showing all recognized words by printing the hash table, and
+  for the user to see the recognized synonyms of a recognized word, and directly increment the closeness value of a synonym (both increase and decrease).
+
+  It should be possible to add every words' synonyms as words themselves with synonyms of the same but with word being the synonym in place of word
+  in the synonyms vector. Done. This is completed. As of right now, I think there is a minor issue with this where it messes up for some words,
+  but even then it passes correct synonyms. Perhaps it is just my output function.
+
+  Write to file. Not needed, might implement before presentation, probably not. If this is implemented it would just output a file that contains
+  the words with synonyms and their closeness value. This would allow a separate library for each user, but it probably won't be implemented
+  because it requires a complete restructuring of either the original synonyms file or the read function, or both. Not undoable, would probably be
+  done by an if else, where it checks what the name of the passed file is, and if it is not the default file it reads differently.
+
+  The function will recognize and have an entry for 2 or 3 word synonyms (ex: wait on), but it will not recognize them when passed in as part of a
+  sentence.
+
+I worked alone, I did all the work.
+
+How to run it:
+  It accepts 2 command line arguments in the form of int hash table size and the string file to read from:
+  final.exe 200 synonyms1.txt
+
+  While it is possible to run it with a different file, it needs to be structured in the same format as the file given.
+  It is also not needed to have the url at the end, but if you include something else at the end of your file, replace the url in quotations
+  on line 287 of main.cpp with the line you want it to stop at and recompile. It will not break because of an empty line, it will instead skip
+  that line and keep going. So it is possible to have empty lines in between read data.
+
+By the way that ipt[i] + 32; was wrong. It really needed to be ipt[i] = tolower(ipt[i])
+
+Does not do tenses (present, past, future)
